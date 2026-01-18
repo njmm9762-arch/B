@@ -5,67 +5,144 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دخول الروم</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
   body {
-    background-color: #111;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 0;
     height: 100vh;
-    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    background: #0d0d0d;
+    color: #fff;
+  }
+
+  /* النجوم المتحركة */
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.1; transform: translateY(0); }
+    50% { opacity: 1; }
+    100% { opacity: 0.1; transform: translateY(-800px); }
+  }
+
+  /* القمر */
+  #moon {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+    border-radius: 50%;
+    box-shadow: 0 0 50px #fff;
+  }
+
+  /* تأثير الضوء السينمائي */
+  body::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
+    animation: lightMove 10s infinite linear;
+    z-index: 0;
+  }
+
+  @keyframes lightMove {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  #container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    top: 30%;
   }
 
   #arrow {
-    font-size: 40px;
+    font-size: 50px;
     animation: bounce 1s infinite;
-    margin-bottom: 20px;
-    color: #ff0;
+    margin-bottom: 30px;
+    color: #ffcc00;
+    text-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00;
   }
 
   @keyframes bounce {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-25px); }
   }
 
   #enterBtn {
-    padding: 20px 40px;
-    font-size: 24px;
-    background-color: #ff0;
+    padding: 25px 50px;
+    font-size: 28px;
+    background: linear-gradient(45deg, #ffcc00, #ffaa00);
     color: #111;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
+    box-shadow: 0 0 20px #ffcc00, 0 0 40px #ffaa00;
     transition: 0.3s;
   }
 
   #enterBtn:hover {
-    background-color: #fff200;
     transform: scale(1.1);
+    box-shadow: 0 0 30px #ffff00, 0 0 60px #ffaa00;
+  }
+
+  audio {
+    display: none;
   }
 </style>
 </head>
 <body>
 
-<div id="arrow">⬇️</div>
-<button id="enterBtn">دخول الروم</button>
+<div id="moon"></div>
+<div id="container">
+  <div id="arrow">⬇️</div>
+  <button id="enterBtn">دخول الروم</button>
+</div>
+
+<audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" autoplay loop></audio>
 
 <script>
+  // إنشاء النجوم
+  const starCount = 100;
+  for(let i = 0; i < starCount; i++){
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.left = Math.random() * window.innerWidth + 'px';
+    star.style.top = Math.random() * window.innerHeight + 'px';
+    star.style.width = Math.random() * 3 + 1 + 'px';
+    star.style.height = star.style.width;
+    star.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    document.body.appendChild(star);
+  }
+
   // التاريخ اللي يبدأ بعده الزر يفتح الواتساب
-  const activationDate = new Date("2026-01-21T00:00:00"); // عدّل التاريخ هنا
-  const whatsappNumber = "201234567890"; // حط رقمك هنا بصيغة +201211056530
+  const activationDate = new Date("2026-01-21T00:00:00"); // عدّل التاريخ
+  const whatsappNumber = "201211056530"; // رقمك
   const whatsappMessage = "يلا بينا الروم يا بطل";
 
   const btn = document.getElementById("enterBtn");
 
   btn.addEventListener("click", () => {
     const now = new Date();
-    if (now < activationDate) {
-      // قبل الثلاثة أيام → صوت جوجل
-      const utterance = new SpeechSynthesisUtterance("لم يتم التفعيل بعد");
+    if(now < activationDate){
+      // قبل الثلاثة أيام → صوت جوجل مع رسالة
+      const utterance = new SpeechSynthesisUtterance("لم يتم التفعيل بعده 01211056530");
       speechSynthesis.speak(utterance);
     } else {
-      // بعد الثلاثة أيام → يفتح واتساب
+      // بعد الثلاثة أيام → فتح واتساب
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
       window.open(url, "_blank");
     }
