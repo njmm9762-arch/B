@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دخول الروم</title>
+<style>
+  body {
+    background-color: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  #arrow {
+    font-size: 40px;
+    animation: bounce 1s infinite;
+    margin-bottom: 20px;
+    color: #ff0;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  #enterBtn {
+    padding: 20px 40px;
+    font-size: 24px;
+    background-color: #ff0;
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  #enterBtn:hover {
+    background-color: #fff200;
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+<div id="arrow">⬇️</div>
+<button id="enterBtn">دخول الروم</button>
+
+<script>
+  // التاريخ اللي يبدأ بعده الزر يفتح الواتساب
+  const activationDate = new Date("2026-01-21T00:00:00"); // عدّل التاريخ هنا
+  const whatsappNumber = "201234567890"; // حط رقمك هنا بصيغة +201211056530
+  const whatsappMessage = "يلا بينا الروم يا بطل";
+
+  const btn = document.getElementById("enterBtn");
+
+  btn.addEventListener("click", () => {
+    const now = new Date();
+    if (now < activationDate) {
+      // قبل الثلاثة أيام → صوت جوجل
+      const utterance = new SpeechSynthesisUtterance("لم يتم التفعيل بعد");
+      speechSynthesis.speak(utterance);
+    } else {
+      // بعد الثلاثة أيام → يفتح واتساب
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(url, "_blank");
+    }
+  });
+</script>
+
+</body>
+</html>
